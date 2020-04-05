@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.7)
 project(sudoku LANGUAGES CXX)
 
 #set(CMAKE_VERBOSE_MAKEFILE ON)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -20,7 +20,8 @@ file(GLOB SOURCES
     "src/cell.cpp"
     "src/gameboard.cpp"
     "src/mainwindow.cpp"
-    "src/numpad.cpp")
+    "src/numpad.cpp"
+    "src/highlightbuttongroup.cpp")
 
 # Find the library
 find_package(PkgConfig REQUIRED)

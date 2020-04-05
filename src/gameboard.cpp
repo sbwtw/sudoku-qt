@@ -85,6 +85,14 @@ void GameBoard::reloadCell(uint32_t row, uint32_t column)
     _cells[row * 9 + column]->setCandidate(can);
 }
 
+void GameBoard::setHighlight(std::optional<int> val)
+{
+    if (val.has_value())
+        sudoku_set_highlight(_sudokuBoard, val.value());
+    else
+        sudoku_clear_highlight(_sudokuBoard);
+}
+
 void GameBoard::paintEvent(QPaintEvent *e)
 {
     QWidget::paintEvent(e);

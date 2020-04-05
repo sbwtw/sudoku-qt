@@ -14,7 +14,6 @@ public:
     ~MainWindow();
 
 private:
-    QButtonGroup *_highLightGroup;
     GameBoard *_gameBoard;
     QPushButton *_newGame;
     QPushButton *_debugDump;

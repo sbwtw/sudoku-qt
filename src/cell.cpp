@@ -43,7 +43,7 @@ void Cell::paintEvent(QPaintEvent *)
 
     // draw background
     if (_cellStates & CellStates_HIGH_LIGHT)
-        p.setBrush(QBrush(qRgb(255, 0, 0)));
+        p.setBrush(QBrush(qRgb(247, 107, 107)));
     else
         p.setBrush(QBrush(qRgb(239, 231, 144)));
     p.drawRoundedRect(r, 5, 5);

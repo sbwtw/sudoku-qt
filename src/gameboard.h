@@ -21,6 +21,7 @@ public slots:
     void debugDump();
     void reloadAllCell();
     void reloadCell(uint32_t row, uint32_t column);
+    void setHighlight(std::optional<int>);
 
 private:
     void paintEvent(QPaintEvent *) override;

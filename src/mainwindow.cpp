@@ -1,8 +1,10 @@
 #include "mainwindow.h"
 #include "gameboard.h"
+#include "highlightbuttongroup.h"
 
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QDebug>
 
 MainWindow::MainWindow()
     : QWidget(nullptr)
@@ -11,22 +13,12 @@ MainWindow::MainWindow()
     _gameBoard = new GameBoard;
     _newGame = new QPushButton("New Game");
     _debugDump = new QPushButton("Dump");
-    _highLightGroup = new QButtonGroup(this);
-    _highLightGroup->setExclusive(true);
 
-    QHBoxLayout *highLightButtonsLayout = new QHBoxLayout;
-    for (int i(1); i != 10; ++i)
-    {
-        QPushButton *b = new QPushButton(QString::number(i));
-        b->setFixedSize(25, 25);
-        b->setCheckable(true);
-
-        _highLightGroup->addButton(b);
-        highLightButtonsLayout->addWidget(b);
-    }
+    HighlightButtonGroup *highlightGroup = new HighlightButtonGroup;
+    connect(highlightGroup, &HighlightButtonGroup::highlightRequest, _gameBoard, &GameBoard::setHighlight);
 
     QHBoxLayout *controlsLayout = new QHBoxLayout;
-    controlsLayout->addLayout(highLightButtonsLayout);
+    controlsLayout->addWidget(highlightGroup);
     controlsLayout->addStretch();
     controlsLayout->addWidget(_newGame);
     controlsLayout->addWidget(_debugDump);
