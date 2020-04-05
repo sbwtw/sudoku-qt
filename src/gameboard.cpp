@@ -1,5 +1,6 @@
 #include "gameboard.h"
 #include "cell.h"
+#include "numpad.h"
 
 #include <QGridLayout>
 #include <QElapsedTimer>
@@ -18,22 +19,28 @@ extern "C" void update_callback(void *ptr, uint32_t row, uint32_t column)
 GameBoard::GameBoard(QWidget *parent)
     : QWidget(parent)
 {
+    _hidedCell = nullptr;
     _sudokuBoard = sudoku_new();
+    _numpad = new Numpad(this);
+    _numpad->hide();
+
     sudoku_set_update_callback(_sudokuBoard, this, update_callback);
 
     for (int i(0); i != 81; ++i)
     {
-        auto cell = new Cell(this);
-        _cells.emplace_back(cell);
+        auto cell = new Cell(i, this);
+        _cells.push_back(cell);
 
         connect(cell, &Cell::clicked, this, &GameBoard::onCellClicked);
     }
 
-    QGridLayout *grid = new QGridLayout;
+    _cellGridLayout = new QGridLayout;
     for (int i(0); i != 81; ++i)
-        grid->addWidget(_cells[i], i / 9, i % 9);
+        _cellGridLayout->addWidget(_cells[i], i / 9, i % 9);
 
-    setLayout(grid);
+    connect(_numpad, &Numpad::triggered, this, &GameBoard::onNumpadTriggered);
+
+    setLayout(_cellGridLayout);
 }
 
 GameBoard::~GameBoard()
@@ -45,6 +52,7 @@ void GameBoard::newGame()
 {
     QElapsedTimer timer;
     timer.start();
+    qDebug() << "Generate start";
     sudoku_generate(_sudokuBoard);
     qDebug() << "Generate took" << timer.elapsed() << "ms";
 
@@ -107,6 +115,35 @@ void GameBoard::paintEvent(QPaintEvent *e)
 void GameBoard::onCellClicked()
 {
     auto cell = static_cast<Cell *>(sender());
-    if (!cell || cell->filled())
+    if (!cell || cell->pre_filled())
         return;
+
+    if (_hidedCell != nullptr)
+    {
+        auto *item = _cellGridLayout->replaceWidget(_numpad, _hidedCell);
+        delete item;
+
+        _hidedCell->show();
+    }
+
+    auto *item = _cellGridLayout->replaceWidget(cell, _numpad);
+    delete item;
+
+    _hidedCell = cell;
+    _hidedCell->hide();
+    _numpad->show();
+}
+
+void GameBoard::onNumpadTriggered(const uint32_t num)
+{
+    auto *item = _cellGridLayout->replaceWidget(_numpad, _hidedCell);
+    delete item;
+
+    auto index = _cells.indexOf(_hidedCell);
+    _numpad->hide();
+    _hidedCell->show();
+    _hidedCell = nullptr;
+
+    if (index != -1)
+        sudoku_set_cell(_sudokuBoard, index / 9, index % 9, num);
 }

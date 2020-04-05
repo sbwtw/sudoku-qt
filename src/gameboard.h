@@ -1,11 +1,12 @@
 #ifndef GAMEBOARD_H
 #define GAMEBOARD_H
 
+#include "numpad.h"
 #include <sudoku.h>
+#include <vector>
 
 #include <QWidget>
-
-#include <vector>
+#include <QGridLayout>
 
 class Cell;
 class GameBoard : public QWidget
@@ -26,10 +27,14 @@ private:
 
 private slots:
     void onCellClicked();
+    void onNumpadTriggered(const uint32_t num);
 
 private:
-    std::vector<Cell *> _cells;
+    QList<Cell *> _cells;
     Board *_sudokuBoard;
+    Numpad *_numpad;
+    Cell *_hidedCell;
+    QGridLayout *_cellGridLayout;
 };
 
 #endif // GAMEBOARD_H

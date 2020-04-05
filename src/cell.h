@@ -9,10 +9,13 @@ class Cell : public QAbstractButton
 {
     Q_OBJECT
 public:
-    Cell(QWidget *parent);
+    Cell(uint32_t index, QWidget *parent);
 
     inline bool filled() const
-    { return bool(_cellStates & CellStates_FILLED); }
+    { return (_cellStates & CellStates_FILLED) == CellStates_FILLED; }
+
+    inline bool pre_filled() const
+    { return (_cellStates & CellStates_PRE_FILLED) == CellStates_PRE_FILLED; }
 
 public slots:
     void setNumber(char number);
@@ -26,6 +29,7 @@ private:
 
 private:
     char _number;
+    uint32_t _index;
     uint32_t _candidate;
     CellStates _cellStates;
 };

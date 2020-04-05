@@ -1,6 +1,7 @@
 #include "numpad.h"
 
 #include <QGridLayout>
+#include <QDebug>
 #include <QTimer>
 
 Numpad::Numpad(QWidget *parent)
@@ -23,8 +24,7 @@ Numpad::Numpad(QWidget *parent)
     }
 
     setLayout(num_grid);
-    setFixedSize(100, 100);
-    setWindowFlags(Qt::FramelessWindowHint | Qt::SplashScreen);
+    setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 }
 
 void Numpad::onSelected()
@@ -33,5 +33,8 @@ void Numpad::onSelected()
     const auto num = _buttons.indexOf(b);
 
     if (num != -1)
-        _selected = num;
+    {
+        _selected = num + 1;
+        emit triggered(num + 1);
+    }
 }

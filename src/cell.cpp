@@ -6,9 +6,10 @@
 #include <QTimer>
 #include <QDebug>
 
-Cell::Cell(QWidget *parent)
+Cell::Cell(uint32_t index, QWidget *parent)
     : QAbstractButton(parent)
     , _number(0)
+    , _index(index)
     , _candidate(0)
     , _cellStates(CellStates_NONE)
 {
@@ -51,18 +52,28 @@ void Cell::paintEvent(QPaintEvent *)
     // draw candidate
     p.drawText(r, Qt::AlignLeft | Qt::AlignTop, candidatesString());
 
-    // draw selected
-    if (_cellStates & CellStates_CONFLICT)
-        p.setPen(Qt::red);
-    else if (_cellStates & CellStates_PRE_FILLED)
-        p.setPen(Qt::black);
-
+#ifdef QT_DEBUG
     auto f = p.font();
-    f.setBold(true);
-    f.setPixelSize(24);
+    f.setPixelSize(8);
     p.setFont(f);
+    const auto text = QString("%1: (%2, %3)").arg(_index).arg(_index / 9).arg(_index % 9);
+    p.drawText(r, Qt::AlignRight | Qt::AlignBottom, text);
+#endif
+
     if (_number)
+    {
+        // draw selected
+        if ((_cellStates & CellStates_CONFLICT) == CellStates_CONFLICT)
+            p.setPen(Qt::red);
+        else if ((_cellStates & CellStates_PRE_FILLED) == CellStates_PRE_FILLED)
+            p.setPen(Qt::black);
+
+        auto f = p.font();
+        f.setBold(true);
+        f.setPixelSize(24);
+        p.setFont(f);
         p.drawText(r, Qt::AlignCenter, QString::number(_number));
+    }
 }
 
 QString Cell::candidatesString() const

@@ -14,6 +14,9 @@ public:
     uint32_t selected() const
     { return _selected; }
 
+signals:
+    void triggered(const uint32_t num);
+
 private slots:
     void onSelected();
 
